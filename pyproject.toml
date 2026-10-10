@@ -1,0 +1,90 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quicklend-kyc-aml"
+version = "0.1.0"
+description = "KYC/AML Orchestration Service with Vendor Abstraction Layer"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi==0.109.0",
+    "uvicorn[standard]==0.27.0",
+    "sqlalchemy==2.0.25",
+    "alembic==1.13.1",
+    "psycopg[binary]==3.1.14",
+    "redis==5.0.1",
+    "pydantic==2.5.3",
+    "pydantic-settings==2.1.0",
+    "cryptography==41.0.7",
+    "pyyaml==6.0.1",
+    "python-dotenv==1.0.0",
+    "httpx==0.25.2",
+    "requests==2.31.0",
+    "zeep==4.2.1",
+    "python-jose[cryptography]==3.3.0",
+    "passlib[bcrypt]==1.7.4",
+    "tenacity==8.2.3",
+    "pytz==2023.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==7.4.4",
+    "pytest-asyncio==0.23.2",
+    "pytest-cov==4.1.0",
+    "httpx==0.25.2",
+    "ruff==0.1.11",
+    "mypy==1.7.1",
+    "black==23.12.1",
+    "isort==5.13.2",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-select = ["E", "F", "W", "I", "C90", "UP", "B", "A", "C4", "PIE", "SIM", "RUF"]
+extend-ignore = ["E501"]
+exclude = [".git", ".venv", "venv", "build", "dist", "migrations"]
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+strict = true
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = [
+    "zeep.*",
+    "tenacity.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "--strict-markers --cov=src --cov-report=term-of-coverage --cov-report=html"
+markers = [
+    "unit: unit tests",
+    "integration: integration tests",
+    "e2e: end-to-end tests",
+    "contract: contract tests",
+]
+
+[tool.coverage.run]
+branch = true
+omit = ["*/tests/*", "*/migrations/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
